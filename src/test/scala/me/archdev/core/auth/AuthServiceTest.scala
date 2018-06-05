@@ -4,7 +4,7 @@ import java.util.UUID
 
 import com.roundeights.hasher.Implicits._
 import me.archdev.BaseServiceTest
-import me.archdev.restapi.core.AuthData
+import me.archdev.restapi.core.{AuthData, UserId}
 import me.archdev.restapi.core.auth.{AuthService, InMemoryAuthDataStorage}
 import pdi.jwt.{Jwt, JwtAlgorithm}
 
@@ -66,7 +66,7 @@ class AuthServiceTest extends BaseServiceTest {
     val authDataStorage = new InMemoryAuthDataStorage
     val authService = new AuthService(authDataStorage, secretKey)
 
-    val testId: String = UUID.randomUUID().toString
+    val testId: UserId = Math.abs(Random.nextInt())
     val testUsername: String = Random.nextString(10)
     val testEmail: String = Random.nextString(10)
     val testPassword: String = Random.nextString(10)

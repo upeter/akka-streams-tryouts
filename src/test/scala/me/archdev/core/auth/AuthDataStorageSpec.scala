@@ -67,7 +67,7 @@ abstract class AuthDataStorageSpec extends BaseServiceTest {
 
   trait Context {
     val authDataStorage: AuthDataStorage = authDataStorageBuilder()
-    val testAuthData = AuthData(UUID.randomUUID().toString, Random.nextString(10), Random.nextString(10), Random.nextString(10))
+    val testAuthData = AuthData(Math.abs(Random.nextInt()), Random.nextString(10), Random.nextString(10), Random.nextString(10))
   }
 
 }

@@ -1,6 +1,6 @@
 package me.archdev.restapi.core.profiles
 
-import me.archdev.restapi.core.UserProfile
+import me.archdev.restapi.core.{UserId, UserProfile}
 import me.archdev.restapi.utils.db.DatabaseConnector
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -9,9 +9,11 @@ sealed trait UserProfileStorage {
 
   def getProfiles(): Future[Seq[UserProfile]]
 
-  def getProfile(id: String): Future[Option[UserProfile]]
+  def getProfile(id: UserId): Future[Option[UserProfile]]
 
   def saveProfile(profile: UserProfile): Future[UserProfile]
+
+  def getProfileGreaterThan(offset:UserId, chunkSize:Int = 10):Future[Seq[UserProfile]]
 
 }
 
@@ -24,11 +26,14 @@ class JdbcUserProfileStorage(
 
   def getProfiles(): Future[Seq[UserProfile]] = db.run(profiles.result)
 
-  def getProfile(id: String): Future[Option[UserProfile]] = db.run(profiles.filter(_.id === id).result.headOption)
+  def getProfile(id: UserId): Future[Option[UserProfile]] = db.run(profiles.filter(_.id === id).result.headOption)
 
   def saveProfile(profile: UserProfile): Future[UserProfile] =
     db.run(profiles.insertOrUpdate(profile)).map(_ => profile)
 
+  def deleteAllProfiles():Future[_] = db.run(profiles.delete)
+
+  override def getProfileGreaterThan(offset: UserId, chunkSize: Int): Future[Seq[UserProfile]] = db.run(profiles.filter(_.id > offset).sortBy(_.id).take(chunkSize).result)
 }
 
 class InMemoryUserProfileStorage extends UserProfileStorage {
@@ -38,7 +43,7 @@ class InMemoryUserProfileStorage extends UserProfileStorage {
   override def getProfiles(): Future[Seq[UserProfile]] =
     Future.successful(state)
 
-  override def getProfile(id: String): Future[Option[UserProfile]] =
+  override def getProfile(id: UserId): Future[Option[UserProfile]] =
     Future.successful(state.find(_.id == id))
 
   override def saveProfile(profile: UserProfile): Future[UserProfile] =
@@ -48,4 +53,5 @@ class InMemoryUserProfileStorage extends UserProfileStorage {
       profile
     }
 
+  override def getProfileGreaterThan(offset: UserId, chunkSize: Int): Future[Seq[UserProfile]] = ???
 }

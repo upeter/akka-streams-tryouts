@@ -3,7 +3,7 @@ package me.archdev.core.profiles
 import java.util.UUID
 
 import me.archdev.BaseServiceTest
-import me.archdev.restapi.core.UserProfile
+import me.archdev.restapi.core.{UserId, UserProfile}
 import me.archdev.restapi.core.profiles.{InMemoryUserProfileStorage, JdbcUserProfileStorage, UserProfileStorage}
 import me.archdev.utils.InMemoryPostgresStorage
 
@@ -37,7 +37,7 @@ abstract class UserProfileStorageSpec extends BaseServiceTest {
 
       "return None if profile not found" in new Context {
         awaitForResult(for {
-          maybeProfile <- userProfileStorage.getProfile("smth")
+          maybeProfile <- userProfileStorage.getProfile(-232323)
         } yield maybeProfile shouldBe None)
       }
 
@@ -78,12 +78,12 @@ abstract class UserProfileStorageSpec extends BaseServiceTest {
 
   trait Context {
     val userProfileStorage: UserProfileStorage = userProfileStorageBuilder()
-    val testProfileId1: String = UUID.randomUUID().toString
-    val testProfileId2: String = UUID.randomUUID().toString
+    val testProfileId1: UserId = Math.abs(Random.nextInt())
+    val testProfileId2: UserId = Math.abs(Random.nextInt())
     val testProfile1: UserProfile = testProfile(testProfileId1)
     val testProfile2: UserProfile = testProfile(testProfileId2)
 
-    def testProfile(id: String) = UserProfile(id, Random.nextString(10), Random.nextString(10))
+    def testProfile(id: UserId) = UserProfile(id, Random.nextString(10), Random.nextString(10))
   }
 
 }

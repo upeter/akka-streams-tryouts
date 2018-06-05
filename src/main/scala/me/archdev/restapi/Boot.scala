@@ -39,9 +39,10 @@ object Boot extends App {
     val authService = new AuthService(authDataStorage, config.secretKey)
     val httpRoute = new HttpRoute(usersService, authService, config.secretKey)
 
+    println("started")
     Http().bindAndHandle(httpRoute.route, config.http.host, config.http.port)
   }
-
+  println("starting...")
   startApplication()
 
 }

@@ -8,7 +8,7 @@ import akka.http.scaladsl.server.Route
 import io.circe.generic.auto._
 import io.circe.syntax._
 import me.archdev.BaseServiceTest
-import me.archdev.restapi.core.{AuthTokenContent, UserProfile, UserProfileUpdate}
+import me.archdev.restapi.core.{AuthTokenContent, UserId, UserProfile, UserProfileUpdate}
 import me.archdev.restapi.core.profiles.UserProfileService
 import me.archdev.restapi.http.routes.ProfileRoute
 import org.mockito.Mockito.when
@@ -131,14 +131,14 @@ class ProfileRouteTest extends BaseServiceTest {
     val userProfileService: UserProfileService = mock[UserProfileService]
     val profileRoute: Route = new ProfileRoute(secretKey, userProfileService).route
 
-    val testProfileId1: String = UUID.randomUUID().toString
-    val testProfileId2: String = UUID.randomUUID().toString
+    val testProfileId1: UserId = Math.abs(Random.nextInt())
+    val testProfileId2: UserId = Math.abs(Random.nextInt())
     val testProfile1: UserProfile = testProfile(testProfileId1)
     val testProfile2: UserProfile = testProfile(testProfileId2)
 
-    def testProfile(id: String) = UserProfile(id, Random.nextString(10), Random.nextString(10))
+    def testProfile(id: UserId) = UserProfile(id, Random.nextString(10), Random.nextString(10))
 
-    def buildAuthToken(id: String): String = Jwt.encode(AuthTokenContent(id).asJson.noSpaces, secretKey, JwtAlgorithm.HS256)
+    def buildAuthToken(id: UserId): String = Jwt.encode(AuthTokenContent(id).asJson.noSpaces, secretKey, JwtAlgorithm.HS256)
   }
 
 }

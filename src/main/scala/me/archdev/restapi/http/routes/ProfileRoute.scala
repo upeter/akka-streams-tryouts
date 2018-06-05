@@ -40,7 +40,7 @@ class ProfileRoute(
           }
         }
       } ~
-      pathPrefix(Segment) { id =>
+      pathPrefix(IntNumber) { id =>
         pathEndOrSingleSlash {
           get {
             complete(getProfile(id).map {

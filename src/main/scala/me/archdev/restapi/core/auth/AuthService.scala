@@ -10,6 +10,7 @@ import io.circe.syntax._
 import io.circe.generic.auto._
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Random
 
 class AuthService(
   authDataStorage: AuthDataStorage,
@@ -24,7 +25,7 @@ class AuthService(
 
   def signUp(login: String, email: String, password: String): Future[AuthToken] =
     authDataStorage
-      .saveAuthData(AuthData(UUID.randomUUID().toString, login, email, password.sha256.hex))
+      .saveAuthData(AuthData(Math.abs(Random.nextInt()), login, email, password.sha256.hex))
       .map(authData => encodeToken(authData.id))
 
   private def encodeToken(userId: UserId): AuthToken =
