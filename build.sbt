@@ -4,7 +4,7 @@ version := "1.0.0"
 scalaVersion := "2.12.4"
 
 libraryDependencies ++= {
-  val akkaHttpV = "10.0.11"
+  val akkaHttpV = "10.1.1"
   val scalaTestV = "3.0.4"
   val slickVersion = "3.2.1"
   val circeV = "0.9.1"
@@ -37,6 +37,8 @@ libraryDependencies ++= {
 
     // Config file parser
     "com.github.pureconfig" %% "pureconfig" % "0.9.0",
+
+    "com.lightbend.akka" %% "akka-stream-alpakka-sse" % "0.18",
 
     // JSON serialization library
     "io.circe" %% "circe-core" % circeV,
